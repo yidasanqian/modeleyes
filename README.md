@@ -1,10 +1,10 @@
-# llm-vision
+# modeleyes
 
-> 多厂商多模态图片/视频描述 CLI + OCR 兜底——让纯文本大模型也能"看图"。
+> 多厂商多模态图片/视频描述 CLI + OCR 兜底——让纯文本大模型也能"看图"（model eyes）。
 
 **简体中文** | [English](README_EN.md)
 
-`llm-vision` 把图片/视频转成结构化文字描述，供 DeepSeek、GLM 等**纯文本大模型**理解视觉内容。多厂商视觉 API 自动检测、无 key 时 OCR 兜底，一行命令安装、三平台一致。
+`modeleyes` 把图片/视频转成结构化文字描述，供 DeepSeek、GLM 等**纯文本大模型**理解视觉内容。多厂商视觉 API 自动检测、无 key 时 OCR 兜底，一行命令安装、三平台一致。
 
 基于 [vision-skill](https://github.com/LearningByDoingNow/vision-skill) 改造为独立通用 CLI。
 
@@ -22,14 +22,14 @@
 
 ```bash
 # 安装（任选其一）
-uv tool install --from 'llm-vision[openai]' --python 3.12
-pipx install "llm-vision[openai]"
+uv tool install --from 'modeleyes[openai]' --python 3.12
+pipx install "modeleyes[openai]"
 
 # 配置 API key
 export OPENAI_API_KEY="sk-..."
 
 # 使用
-llm-vision photo.jpg
+modeleyes photo.jpg
 ```
 
 ## 安装
@@ -38,14 +38,14 @@ llm-vision photo.jpg
 
 ```bash
 # 单厂商
-uv tool install --from 'llm-vision[openai]' --python 3.12
+uv tool install --from 'modeleyes[openai]' --python 3.12
 # 全厂商 API（轻量，无 torch）
-uv tool install --from 'llm-vision[all]' --python 3.12
+uv tool install --from 'modeleyes[all]' --python 3.12
 # 全厂商 + OCR（含 torch，体积大）
-uv tool install --from 'llm-vision[full]' --python 3.12
+uv tool install --from 'modeleyes[full]' --python 3.12
 
 # 或用 pipx
-pipx install "llm-vision[openai]"
+pipx install "modeleyes[openai]"
 ```
 
 > ⚠️ **OCR 用途需 pin Python 3.12**：`easyocr` 依赖 `torch`，而 torch 对 Python 3.14 的轮子尚不齐全，故 `[ocr]`/`[full]` 在 3.14 上会安装失败。纯 API 用途（`[openai]`/`[all]`）任意版本安全。uv 默认选最新 Python，故安装命令显式 `--python 3.12`。
@@ -71,15 +71,15 @@ pipx install "llm-vision[openai]"
 ## 用法
 
 ```bash
-llm-vision --list-providers                    # 列出厂商配置状态
-llm-vision photo.jpg                           # 图片描述
-cat screenshot.png | llm-vision -              # stdin 管道
-llm-vision https://example.com/a.jpg           # 远程 URL
-llm-vision video.mp4 --max-frames 8            # 视频（需 ffmpeg + key）
-llm-vision a.jpg b.jpg                         # 多文件
-llm-vision photo.jpg --provider zhipu --model glm-4.6v   # 指定厂商/模型
-llm-vision photo.jpg --prompt "重点关注文字"    # 自定义提示词
-python -m llm_vision photo.jpg                 # 模块调用（venv 内）
+modeleyes --list-providers                    # 列出厂商配置状态
+modeleyes photo.jpg                           # 图片描述
+cat screenshot.png | modeleyes -              # stdin 管道
+modeleyes https://example.com/a.jpg           # 远程 URL
+modeleyes video.mp4 --max-frames 8            # 视频（需 ffmpeg + key）
+modeleyes a.jpg b.jpg                         # 多文件
+modeleyes photo.jpg --provider zhipu --model glm-4.6v   # 指定厂商/模型
+modeleyes photo.jpg --prompt "重点关注文字"    # 自定义提示词
+python -m modeleyes photo.jpg                 # 模块调用（venv 内）
 ```
 
 ## 支持的厂商
@@ -107,8 +107,25 @@ export OPENAI_API_KEY="your-key"
 # 编辑 ~/.claude/settings.json 的 env 字段
 ```
 
-模型优先级：`--model` 参数 > `VISION_MODEL` 环境变量 > 厂商默认值。
 超时：默认 90s，可用 `VISION_TIMEOUT=120` 调整。
+
+### 用环境变量覆盖默认模型
+
+不必每次传 `--model`，用 `VISION_MODEL` 设置默认模型（优先级：`--model` 参数 > `VISION_MODEL` > 厂商默认值）：
+
+```bash
+export VISION_MODEL="gpt-4o-mini"   # OpenAI 用 gpt-4o-mini 而非默认 gpt-4o
+modeleyes photo.jpg
+
+export VISION_MODEL="glm-4.6v"      # 智谱用 glm-4.6v
+modeleyes photo.jpg
+```
+
+临时覆盖用 `--model`（优先级最高）：
+
+```bash
+modeleyes photo.jpg --model gpt-4o   # 本次用 gpt-4o，忽略 VISION_MODEL
+```
 
 ## 平台支持
 

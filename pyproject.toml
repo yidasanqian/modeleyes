@@ -3,13 +3,13 @@ requires = ["hatchling>=1.25"]
 build-backend = "hatchling.build"
 
 [project]
-name = "llm-vision"
+name = "modeleyes"
 version = "0.1.0"
 description = "多厂商多模态图片/视频描述 CLI + OCR 兜底（视觉能力提供给纯文本大模型）"
 readme = "README.md"
 requires-python = ">=3.10"
 license = { text = "MIT" }
-authors = [{ name = "llm-vision contributors" }]
+authors = [{ name = "modeleyes contributors" }]
 keywords = ["vision", "multimodal", "llm", "cli", "ocr", "image", "video"]
 classifiers = [
     "Programming Language :: Python :: 3",
@@ -23,6 +23,11 @@ dependencies = [
     "Pillow>=10.0",
 ]
 
+[project.urls]
+Homepage = "https://github.com/yidasanqian/llm-vision"
+Repository = "https://github.com/yidasanqian/llm-vision"
+Issues = "https://github.com/yidasanqian/llm-vision/issues"
+
 [project.optional-dependencies]
 # —— API 厂商（纯 Python SDK，三平台安全，无 torch，轻量）——
 zhipu = ["zai-sdk>=0.2.3"]
@@ -34,15 +39,15 @@ ocr = ["easyocr>=1.7.1"]           # torch+torchvision，体积大，Python 3.14
 tesseract = ["pytesseract>=0.3.10"]
 # —— 组合 ——
 all = [
-    "llm-vision[zhipu]",
-    "llm-vision[openai]",
-    "llm-vision[anthropic]",
-    "llm-vision[google]",
+    "modeleyes[zhipu]",
+    "modeleyes[openai]",
+    "modeleyes[anthropic]",
+    "modeleyes[google]",
 ]
-full = ["llm-vision[all]", "llm-vision[ocr]", "llm-vision[tesseract]"]
+full = ["modeleyes[all]", "modeleyes[ocr]", "modeleyes[tesseract]"]
 
 [project.scripts]
-llm-vision = "llm_vision.core:main"   # 命令名(含连字符) ; 模块路径用下划线包名
+modeleyes = "modeleyes.core:main"   # 包名=命令名 modeleyes ; 模块路径用包名
 
 [tool.hatch.build.targets.wheel]
-packages = ["src/llm_vision"]
+packages = ["src/modeleyes"]

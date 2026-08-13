@@ -217,7 +217,7 @@ OCR_FALLBACK_NOTE = (
     "  export ANTHROPIC_API_KEY=\"your-key\" # Anthropic Claude\n"
     "  export GOOGLE_API_KEY=\"your-key\"    # Google Gemini\n"
     "  export MIMO_API_KEY=\"your-key\"      # 小米 MiMo\n\n"
-    "OCR 增强（可选）: uv tool install --from 'llm-vision[ocr]' --python 3.12\n"
+    "OCR 增强（可选）: uv tool install --from 'modeleyes[ocr]' --python 3.12\n"
     "  (easyocr 含 torch，体积大，需 pin Python 3.12)"
 )
 
@@ -487,11 +487,11 @@ def _detect_provider(preferred: Optional[str] = None
                 key = os.environ.get(info.env_var)
                 if key:
                     return (info.name, cls(key), info.default_model)
-                print(f"[vision] 指定厂商 {info.label} 未配置 {info.env_var}，降级自动检测",
+                print(f"[modeleyes] 指定厂商 {info.label} 未配置 {info.env_var}，降级自动检测",
                       file=sys.stderr)
                 break
         else:
-            print(f"[vision] 未知厂商: {preferred}，降级自动检测", file=sys.stderr)
+            print(f"[modeleyes] 未知厂商: {preferred}，降级自动检测", file=sys.stderr)
 
     # 自动检测第一个有 key 的厂商
     for info, cls in PROVIDER_REGISTRY:
@@ -500,7 +500,7 @@ def _detect_provider(preferred: Optional[str] = None
             try:
                 return (info.name, cls(key), info.default_model)
             except Exception as e:
-                print(f"[vision] {info.label} 初始化失败: {e}", file=sys.stderr)
+                print(f"[modeleyes] {info.label} 初始化失败: {e}", file=sys.stderr)
                 continue
 
     return None
@@ -604,7 +604,7 @@ def _run_ocr(image_path: str) -> str:
     try:
         return _image_basic_info(image_path)
     except ImportError:
-        return f"[OCR 不可用] Pillow 未安装。请运行: uv tool install --from 'llm-vision[ocr]' --python 3.12\n\n调试: {'; '.join(ocr_errors)}"
+        return f"[OCR 不可用] Pillow 未安装。请运行: uv tool install --from 'modeleyes[ocr]' --python 3.12\n\n调试: {'; '.join(ocr_errors)}"
     except Exception as e:
         return f"[OCR 不可用] 所有方案均失败。\n\n调试: {'; '.join(ocr_errors)}; Pillow: {e}"
 
@@ -636,11 +636,11 @@ def describe_image(
     if detected:
         name, provider, default_model = detected
         use_model = model or os.environ.get("VISION_MODEL") or default_model
-        print(f"[vision] 使用 {name} / {use_model}", file=sys.stderr)
+        print(f"[modeleyes] 使用 {name} / {use_model}", file=sys.stderr)
         return provider.describe_image(image_url, final_prompt, use_model)
 
     # OCR 兜底
-    print("[vision] 未检测到多模态 API key，进入 OCR 兜底模式", file=sys.stderr)
+    print("[modeleyes] 未检测到多模态 API key，进入 OCR 兜底模式", file=sys.stderr)
     if _is_url(path_or_url):
         ocr = (
             "[OCR 不可用] 远程 URL 无法 OCR。\n"
@@ -671,7 +671,7 @@ def describe_video(
 
     name, provider, default_model = detected
     use_model = model or os.environ.get("VISION_MODEL") or default_model
-    print(f"[vision] 使用 {name} / {use_model} 描述视频", file=sys.stderr)
+    print(f"[modeleyes] 使用 {name} / {use_model} 描述视频", file=sys.stderr)
 
     # URL 直接传（部分厂商支持视频 URL 的原生处理）
     if _is_url(path_or_url):
@@ -765,10 +765,10 @@ def main() -> None:
         formatter_class=argparse.RawDescriptionHelpFormatter,
         epilog=(
             "示例:\n"
-            "  llm-vision photo.jpg\n"
-            "  llm-vision photo.jpg --provider openai --model gpt-4o-mini\n"
-            "  llm-vision video.mp4 --max-frames 10\n"
-            "  llm-vision --list-providers"
+            "  modeleyes photo.jpg\n"
+            "  modeleyes photo.jpg --provider openai --model gpt-4o-mini\n"
+            "  modeleyes video.mp4 --max-frames 10\n"
+            "  modeleyes --list-providers"
         ),
     )
     parser.add_argument("files", nargs="*", help="图片/视频的文件路径或 URL，支持多个。"

@@ -1,10 +1,10 @@
-# llm-vision
+# modeleyes
 
-> Multi-provider multimodal image/video description CLI with OCR fallback — lets text-only LLMs "see".
+> Multi-provider multimodal image/video description CLI with OCR fallback — lets text-only LLMs "see" (model eyes).
 
 [简体中文](README.md) | **English**
 
-`llm-vision` turns images/videos into structured text descriptions so that text-only LLMs (DeepSeek, GLM, ...) can understand visual content. It auto-detects among vision API providers and falls back to OCR when no API key is set. One-line install, consistent across platforms.
+`modeleyes` turns images/videos into structured text descriptions so that text-only LLMs (DeepSeek, GLM, ...) can understand visual content. It auto-detects among vision API providers and falls back to OCR when no API key is set. One-line install, consistent across platforms.
 
 Refactored from [vision-skill](https://github.com/LearningByDoingNow/vision-skill) into a standalone general-purpose CLI.
 
@@ -22,14 +22,14 @@ Refactored from [vision-skill](https://github.com/LearningByDoingNow/vision-skil
 
 ```bash
 # Install (either)
-uv tool install --from 'llm-vision[openai]' --python 3.12
-pipx install "llm-vision[openai]"
+uv tool install --from 'modeleyes[openai]' --python 3.12
+pipx install "modeleyes[openai]"
 
 # Set API key
 export OPENAI_API_KEY="sk-..."
 
 # Use
-llm-vision photo.jpg
+modeleyes photo.jpg
 ```
 
 ## Installation
@@ -38,14 +38,14 @@ llm-vision photo.jpg
 
 ```bash
 # Single provider
-uv tool install --from 'llm-vision[openai]' --python 3.12
+uv tool install --from 'modeleyes[openai]' --python 3.12
 # All API providers (lightweight, no torch)
-uv tool install --from 'llm-vision[all]' --python 3.12
+uv tool install --from 'modeleyes[all]' --python 3.12
 # All providers + OCR (includes torch, large)
-uv tool install --from 'llm-vision[full]' --python 3.12
+uv tool install --from 'modeleyes[full]' --python 3.12
 
 # or pipx
-pipx install "llm-vision[openai]"
+pipx install "modeleyes[openai]"
 ```
 
 > ⚠️ **Pin Python 3.12 for OCR**: `easyocr` depends on `torch`, whose wheels for Python 3.14 are not yet complete, so `[ocr]`/`[full]` fail to install on 3.14. Pure API usage (`[openai]`/`[all]`) is safe on any version. uv defaults to the latest Python, hence the explicit `--python 3.12`.
@@ -71,15 +71,15 @@ pipx install "llm-vision[openai]"
 ## Usage
 
 ```bash
-llm-vision --list-providers                    # list provider status
-llm-vision photo.jpg                           # describe image
-cat screenshot.png | llm-vision -              # stdin pipe
-llm-vision https://example.com/a.jpg           # remote URL
-llm-vision video.mp4 --max-frames 8            # video (needs ffmpeg + key)
-llm-vision a.jpg b.jpg                         # multiple files
-llm-vision photo.jpg --provider zhipu --model glm-4.6v   # specify provider/model
-llm-vision photo.jpg --prompt "focus on text"  # custom prompt
-python -m llm_vision photo.jpg                 # module call (in venv)
+modeleyes --list-providers                    # list provider status
+modeleyes photo.jpg                           # describe image
+cat screenshot.png | modeleyes -              # stdin pipe
+modeleyes https://example.com/a.jpg           # remote URL
+modeleyes video.mp4 --max-frames 8            # video (needs ffmpeg + key)
+modeleyes a.jpg b.jpg                         # multiple files
+modeleyes photo.jpg --provider zhipu --model glm-4.6v   # specify provider/model
+modeleyes photo.jpg --prompt "focus on text"  # custom prompt
+python -m modeleyes photo.jpg                 # module call (in venv)
 ```
 
 ## Supported providers
@@ -104,8 +104,25 @@ export OPENAI_API_KEY="your-key"
 # 3. global: ~/.claude/settings.json env field
 ```
 
-Model priority: `--model` arg > `VISION_MODEL` env > provider default.
 Timeout: default 90s, adjustable via `VISION_TIMEOUT=120`.
+
+### Override the default model via env var
+
+Skip `--model` on every run by setting `VISION_MODEL` (priority: `--model` arg > `VISION_MODEL` env > provider default):
+
+```bash
+export VISION_MODEL="gpt-4o-mini"   # OpenAI uses gpt-4o-mini instead of default gpt-4o
+modeleyes photo.jpg
+
+export VISION_MODEL="glm-4.6v"      # Zhipu uses glm-4.6v
+modeleyes photo.jpg
+```
+
+Override temporarily with `--model` (highest priority):
+
+```bash
+modeleyes photo.jpg --model gpt-4o   # use gpt-4o this run, ignoring VISION_MODEL
+```
 
 ## Platform support
 
