@@ -1,0 +1,48 @@
+[build-system]
+requires = ["hatchling>=1.25"]
+build-backend = "hatchling.build"
+
+[project]
+name = "llm-vision"
+version = "0.1.0"
+description = "多厂商多模态图片/视频描述 CLI + OCR 兜底（视觉能力提供给纯文本大模型）"
+readme = "README.md"
+requires-python = ">=3.10"
+license = { text = "MIT" }
+authors = [{ name = "llm-vision contributors" }]
+keywords = ["vision", "multimodal", "llm", "cli", "ocr", "image", "video"]
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "Operating System :: OS Independent",
+    "Environment :: Console",
+    "Topic :: Multimedia :: Graphics",
+    "License :: OSI Approved :: MIT License",
+]
+dependencies = [
+    "requests>=2.31",
+    "Pillow>=10.0",
+]
+
+[project.optional-dependencies]
+# —— API 厂商（纯 Python SDK，三平台安全，无 torch，轻量）——
+zhipu = ["zai-sdk>=0.2.3"]
+openai = ["openai>=1.0"]           # 同时覆盖 OpenAI 与小米 MiMo（MiMo 复用 openai SDK）
+anthropic = ["anthropic>=0.30"]
+google = ["google-genai>=1.0"]
+# —— OCR 兜底（重型/平台敏感，独立拆出）——
+ocr = ["easyocr>=1.7.1"]           # torch+torchvision，体积大，Python 3.14 轮子不齐 → 安装需 pin 3.12
+tesseract = ["pytesseract>=0.3.10"]
+# —— 组合 ——
+all = [
+    "llm-vision[zhipu]",
+    "llm-vision[openai]",
+    "llm-vision[anthropic]",
+    "llm-vision[google]",
+]
+full = ["llm-vision[all]", "llm-vision[ocr]", "llm-vision[tesseract]"]
+
+[project.scripts]
+llm-vision = "llm_vision.core:main"   # 命令名(含连字符) ; 模块路径用下划线包名
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/llm_vision"]
