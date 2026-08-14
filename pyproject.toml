@@ -24,9 +24,9 @@ dependencies = [
 ]
 
 [project.urls]
-Homepage = "https://github.com/yidasanqian/llm-vision"
-Repository = "https://github.com/yidasanqian/llm-vision"
-Issues = "https://github.com/yidasanqian/llm-vision/issues"
+Homepage = "https://github.com/yidasanqian/modeleyes"
+Repository = "https://github.com/yidasanqian/modeleyes"
+Issues = "https://github.com/yidasanqian/modeleyes/issues"
 
 [project.optional-dependencies]
 # —— API 厂商（纯 Python SDK，三平台安全，无 torch，轻量）——
