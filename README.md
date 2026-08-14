@@ -6,8 +6,6 @@
 
 `modeleyes` 把图片/视频转成结构化文字描述，供 DeepSeek、GLM 等**纯文本大模型**理解视觉内容。多厂商视觉 API 自动检测、无 key 时 OCR 兜底，一行命令安装、三平台一致。
 
-基于 [vision-skill](https://github.com/LearningByDoingNow/vision-skill) 改造为独立通用 CLI。
-
 ## 特性
 
 - 🖼️ **图片描述**：结构化 7 段式（场景/背景/主体/文字/色彩/细节/印象），专为纯文本模型设计

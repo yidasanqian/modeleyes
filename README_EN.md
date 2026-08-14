@@ -6,8 +6,6 @@
 
 `modeleyes` turns images/videos into structured text descriptions so that text-only LLMs (DeepSeek, GLM, ...) can understand visual content. It auto-detects among vision API providers and falls back to OCR when no API key is set. One-line install, consistent across platforms.
 
-Refactored from [vision-skill](https://github.com/LearningByDoingNow/vision-skill) into a standalone general-purpose CLI.
-
 ## Features
 
 - 🖼️ **Image description**: structured 7-section output (scene/background/subject/text/color/detail/impression), designed for text-only models
