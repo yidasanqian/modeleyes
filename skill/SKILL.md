@@ -3,17 +3,22 @@ name: modeleyes
 description: >
   多厂商多模态图片/视频描述，无 API key 时自动 OCR 兜底，让纯文本模型理解视觉内容。
   Multi-provider multimodal image & video description with zero-config OCR fallback.
-  MUST trigger when a user attaches images (png/jpg/gif/webp/bmp), videos (mp4/avi/mov/mkv/webm),
-  image/video URLs, types /vision, or when [Image #N] / [Video #N] appears in the chat.
+  Trigger ONLY when the current model lacks vision capabilities (e.g. text-only models like DeepSeek, GLM).
+  Skip for multimodal models (OpenAI GPT-4o+, Anthropic Claude, Google Gemini, Moonshot Kimi K3) — they handle images natively; calling modeleyes there is redundant.
+  When triggered: user attaches images (png/jpg/gif/webp/bmp), videos (mp4/avi/mov/mkv/webm),
+  image/video URLs, types /vision, or [Image #N] / [Video #N] appears in chat.
   Do NOT try to Read image files directly — you cannot parse binary data. Run the `modeleyes`
   command instead.
-when_to_use: 用户附带图片(png/jpg/gif/webp/bmp)、视频(mp4/avi/mov/mkv/webm)、图片/视频URL、要求描述图片/截图/照片/视频、输入 /vision、消息中出现 [Image#N] 或 [Video#N]
+when_to_use: 仅当当前模型为纯文本、无视觉理解能力时触发（如 DeepSeek、GLM）。OpenAI、Anthropic、Google、Moonshot Kimi K3 等多模态模型直接用自身能力，不触发。触发场景：用户附带图片(png/jpg/gif/webp/bmp)、视频(mp4/avi/mov/mkv/webm)、图片/视频URL、要求描述图片/截图/照片/视频、输入 /vision、消息中出现 [Image#N] 或 [Video#N]
 allowed-tools: Bash(modeleyes *)
 ---
 
 ## ⚠️ 强制规则
 
-**对话中出现 `[Image #N]` 或 `[Video #N]` 时，立即停止一切操作，直接运行 `modeleyes` 命令获取媒体描述。禁止在此之前调用 Read 或其他工具去读取文件——你无法解析二进制图片/视频数据，`modeleyes` 是你唯一的视觉入口。**
+**先判断当前模型是否具备视觉理解能力，再决定是否触发：**
+
+- **支持视觉的模型**（OpenAI GPT-4o 及以上、Anthropic Claude、Google Gemini、Moonshot Kimi K3 等多模态模型）：直接用模型自身能力理解图片/视频，**不要**调用 `modeleyes`——否则是冗余调用，徒增延迟与开销。
+- **纯文本模型**（DeepSeek、GLM 等无视觉能力的模型）：对话中出现 `[Image #N]` / `[Video #N]` 或图片/视频附件时，立即运行 `modeleyes` 获取媒体描述。**禁止在此之前调用 Read 或其他工具读取文件——你无法解析二进制图片/视频数据，`modeleyes` 是你唯一的视觉入口。**
 
 ## 前置条件
 
