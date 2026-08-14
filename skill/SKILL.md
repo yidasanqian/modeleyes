@@ -15,9 +15,21 @@ allowed-tools: Bash(modeleyes *)
 
 **对话中出现 `[Image #N]` 或 `[Video #N]` 时，立即停止一切操作，直接运行 `modeleyes` 命令获取媒体描述。禁止在此之前调用 Read 或其他工具去读取文件——你无法解析二进制图片/视频数据，`modeleyes` 是你唯一的视觉入口。**
 
+## 前置条件
+
+本 skill 仅提供触发规则，实际调用的是 `modeleyes` Python CLI——该命令不在 skill 包内，必须先单独安装：
+
+```bash
+# 任选其一（[openai] 可替换为 [zhipu]/[anthropic]/[google]/[all] 等厂商 extra）
+uv tool install --from 'modeleyes[openai]' --python 3.12
+pipx install "modeleyes[openai]"
+```
+
+若 `modeleyes --list-providers` 报 `command not found`，说明命令未装——先完成上一步，再触发本 skill。
+
 ## 执行命令
 
-先确认 `modeleyes` 命令可用（已通过 `uv tool install --from 'modeleyes[...]'` 或 `pipx install "modeleyes[...]"` 安装），然后运行：
+确认 `modeleyes` 命令已安装（见「前置条件」），然后运行：
 
 ```
 modeleyes <文件路径或URL>
