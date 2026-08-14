@@ -66,6 +66,19 @@ pipx install "modeleyes[openai]"
 - **ffmpeg**（视频关键帧提取）：Windows `winget install ffmpeg` / macOS `brew install ffmpeg` / Linux `sudo apt install ffmpeg`
 - **tesseract**（pytesseract OCR）：Windows 官方安装器或 `choco install tesseract` / macOS `brew install tesseract` / Linux `sudo apt install tesseract-ocr tesseract-ocr-chi-sim`
 
+### Skill 安装
+
+本仓库提供 skill（仅含 `SKILL.md` 触发规则，不含 `modeleyes` 命令本身），可被任何支持 skill 的 agent 加载。**须先按上方「包安装」装好命令**，再装 skill：
+
+```bash
+# 全局（用户级，所有项目可用）——推荐
+npx skills@latest add yidasanqian/modeleyes -g
+# 或项目级（装到当前项目 .claude/skills）
+npx skills@latest add yidasanqian/modeleyes
+```
+
+> skill 只负责在对话出现图片/视频时自动触发 `modeleyes` 命令。未装命令时触发会报 `command not found`——请先完成命令安装。
+
 ## 用法
 
 ```bash

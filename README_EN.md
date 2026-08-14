@@ -66,6 +66,19 @@ pipx install "modeleyes[openai]"
 - **ffmpeg** (video keyframe extraction): Windows `winget install ffmpeg` / macOS `brew install ffmpeg` / Linux `sudo apt install ffmpeg`
 - **tesseract** (pytesseract OCR): Windows installer or `choco install tesseract` / macOS `brew install tesseract` / Linux `sudo apt install tesseract-ocr tesseract-ocr-chi-sim`
 
+### Skill install
+
+This repo ships a skill (only `SKILL.md` trigger rules — not the `modeleyes` command itself), loadable by any skill-capable agent. **Install the command first** via "Package install" above, then add the skill:
+
+```bash
+# Global (user-level, available in all projects) — recommended
+npx skills@latest add yidasanqian/modeleyes -g
+# Or project-level (into the current project's .claude/skills)
+npx skills@latest add yidasanqian/modeleyes
+```
+
+> The skill only auto-triggers the `modeleyes` command when images/videos appear in chat. Without the command installed, triggering fails with `command not found` — install the command first.
+
 ## Usage
 
 ```bash
